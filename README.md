@@ -1,105 +1,112 @@
-<p align="center">
-  <a href="https://github.com/actions/typescript-action/actions"><img alt="typescript-action status" src="https://github.com/actions/typescript-action/workflows/build-test/badge.svg"></a>
-</p>
+# Review cheerleader GitHub Action
 
-# Create a JavaScript Action using TypeScript
+Pull request reviews are pivotal to teams. It helps to grow team.
 
-Use this template to bootstrap the creation of a TypeScript action.:rocket:
+The purpose of this my existence is to make it fun!
 
-This template includes compilation support, tests, a validation workflow, publishing, and versioning guidance.  
+I would give cheerio coins to entice developers for more engaging reviews!
 
-If you are new, there's also a simpler introduction.  See the [Hello World JavaScript Action](https://github.com/actions/hello-world-javascript-action)
+## How do I work
 
-## Create an action from this template
+I grab all `closed/merged` pull requests and gets the review details.
 
-Click the `Use this Template` and provide the new repo details for your action
+I allot the following scores:
 
-## Code in Main
-
-> First, you'll need to have a reasonably modern version of `node` handy. This won't work with versions older than 9, for instance.
-
-Install the dependencies  
-```bash
-$ npm install
+```js
+const SCORE_CHANGES_REQUESTED = 1.5
+const SCORE_COMMENTED = 1.5
+const SCORE_APPROVED = 1.0
 ```
 
-Build the typescript and package it for distribution
-```bash
-$ npm run build && npm run package
-```
+I encourage review discussions and hence the score is higher there!
 
-Run the tests :heavy_check_mark:  
-```bash
-$ npm test
+In the end, I will send a message with report if you include the slack webhook URL.
 
- PASS  ./index.test.js
-  ✓ throws invalid number (3ms)
-  ✓ wait 500 ms (504ms)
-  ✓ test runs (95ms)
+## How to use me
 
-...
-```
-
-## Change action.yml
-
-The action.yml defines the inputs and output for your action.
-
-Update the action.yml with your name, description, inputs and outputs for your action.
-
-See the [documentation](https://help.github.com/en/articles/metadata-syntax-for-github-actions)
-
-## Change the Code
-
-Most toolkit and CI/CD operations involve async operations so the action is run in an async function.
-
-```javascript
-import * as core from '@actions/core';
-...
-
-async function run() {
-  try { 
-      ...
-  } 
-  catch (error) {
-    core.setFailed(error.message);
-  }
-}
-
-run()
-```
-
-See the [toolkit documentation](https://github.com/actions/toolkit/blob/master/README.md#packages) for the various packages.
-
-## Publish to a distribution branch
-
-Actions are run from GitHub repos so we will checkin the packed dist folder. 
-
-Then run [ncc](https://github.com/zeit/ncc) and push the results:
-```bash
-$ npm run package
-$ git add dist
-$ git commit -a -m "prod dependencies"
-$ git push origin releases/v1
-```
-
-Note: We recommend using the `--license` option for ncc, which will create a license file for all of the production node modules used in your project.
-
-Your action is now published! :rocket: 
-
-See the [versioning documentation](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md)
-
-## Validate
-
-You can now validate the action by referencing `./` in a workflow in your repo (see [test.yml](.github/workflows/test.yml))
+Spin up a workflow with something like:
 
 ```yaml
-uses: ./
-with:
-  milliseconds: 1000
+on:
+ workflow_dispatch:
+ pull_request:
+     types: [closed]
+
+permissions:
+  contents: read
+
+jobs:
+  cheers:
+    runs-on: ubuntu-latest
+    name: 🎉
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Let's cheer up
+      id: cheerios-step
+      uses: ./
+      with:
+        api-token: ${{ secrets.API_TOKEN }}
+        slack-webhook-url-map: "{'sample-team': '${{ secrets.SLACK_TOKEN }}'}"
+    - name: Upload cheerios state
+      uses: actions/upload-artifact@v2
+      with:
+        name: store
+        path: ${{ steps.cheerios-step.outputs.cheerios-file }}
+        retention-days: 1
 ```
 
-See the [actions tab](https://github.com/actions/typescript-action/actions) for runs of this action! :rocket:
+### Is artifact needed?
 
-## Usage:
+Yes! That's how I store the state across runs, to make sure I don't process the same pull request again and again!
 
-After testing you can [create a v1 tag](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md) to reference the stable and latest V1 action
+Store the file produced as `cheerios-file` output.
+
+### What's slack-webhook-url-map?
+
+I provide slack notifications for reviews done on behalf of a team.
+
+So if a person `mona` reviewed on behalf of `mona-team`, you can set up notifications for reviews done for `mona-team` with: `{'mona-team': '${{ secrets.SLACK_TOKEN }}'}`
+
+### What secrets are needed?
+
+- `API_TOKEN` (required): Since I use graphQL API, I need `read:discussion, read:org, repo` scopes, which don't exist in [`GITHUB_TOKEN`](https://docs.github.com/en/actions/security-guides/automatic-token-authentication), so I need this please!
+- `SLACK_TOKEN` (optional, if you need slack notifications): Slack [incoming webhook URL](https://api.slack.com/messaging/webhooks) for a channel
+
+### What if you don't need any slack requirement?
+
+- I produce an output `cheerios-map` in the following format:
+
+```js
+{
+    solo: {
+        "$authorName:string": "$cheerioCoins:number"
+        ...
+    },
+    team: {
+        "$teamName:string": {
+            "$authorName:string": "$cheerioCoins:number"
+            ...
+        }
+        ...
+    },
+    additionalDetails: {
+        "$teamName:string": {
+            "approved": "$count:number",
+            "requestedChanged": "$count:number",
+            "commented": "$count:number",
+            "delta": "$count:number",
+            "PRs": [
+                {
+                    "title": "$title:string",
+                    "url": "$url:string"
+                }
+                ...
+            ]
+        }
+        ...
+    }
+}
+```
+
+you can `JSON.parse` the content and do anything you want with it!

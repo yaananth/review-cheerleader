@@ -1,11 +1,27 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Review cheerleader'
+description: 'A cheerleader for GitHub pull request reviews that allots cheerio points to developers.'
 inputs:
-  milliseconds: # change this
+  api-token:
+    description: 'Token to run graphQL (to get pullrequest details) and get artifact call, need scopes: read:discussion, read:org, repo'
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+    default: ''
+  slack-webhook-url-map:
+    description: 'webhook urls JSON to post to, map of teamname to webhook url'
+    required: false
+    default: ''
+  slack-heading-emoji:
+    description: 'emoji slack heading message'
+    required: false
+    default: '👋'
+  slack-cheerio-emoji:
+    description: 'emoji cheerio coin'
+    required: false
+    default: '🪙'
+ouputs:
+  cheerios-map:
+    description: 'Result JSON'
+  cheerios-file:
+    description: 'State file to store as artifact'
 runs:
   using: 'node12'
-  main: 'dist/index.js'
+  main: 'lib/main.js'
