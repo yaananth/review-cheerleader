@@ -185,7 +185,7 @@ async function run(): Promise<void> {
             )
         }
         
-        state.lastPRCursor = cursor
+        state.lastPRCursor = cursor !== null ? cursor : state.lastPRCursor
         state.additionalDetails = outputTeamToAuthorText;
 
         core.info(`📋 Storing state for the next run, also setting output "cheerios-map": ${JSON.stringify(state)}`)
@@ -267,11 +267,25 @@ async function getStoredState(octokit: InstanceType<typeof GitHub>): Promise<Sta
         repo: context.repo.repo,
         per_page: 1,
         workflow_id: context.workflow,
+        status: 'success'
     })
     if (lastRun.data.total_count > 0) {
-        core.info(`Found ${lastRun.data.total_count} last runs with sha ${lastRun.data.workflow_runs[0].head_sha} ${lastRun.data.workflow_runs[0].html_url}`);
-        core.info(`Getting artifact from last run ${lastRun.data.workflow_runs[0].id}...URL: ${lastRun.data.workflow_runs[0].artifacts_url}`);
+        const workflowRun = lastRun.data.workflow_runs[0]
+        const workflowCompletedAt = workflowRun.updated_at
 
+        // check if completed at is with in 5 minutes
+        const lastRunCompletedAt = new Date(workflowCompletedAt)
+        const now = new Date()
+        const diff = now.getTime() - lastRunCompletedAt.getTime()
+        core.info(`Found ${lastRun.data.total_count}, completed at ${workflowCompletedAt} (${diff} ms ago) with URL: ${lastRun.data.workflow_runs[0].html_url}`);
+        if (diff < 1 * 60 * 1000) {
+            // wait until 1 minutes after last run
+            const leftOver = 1 * 60 * 1000 - diff
+            core.info(`Last run completed at ${lastRunCompletedAt} is within 1 minutes, waiting ${leftOver} ms, this is make sure artifact is read with full contents...`);
+            await new Promise(resolve => setTimeout(resolve, leftOver));
+        }
+
+        core.info(`Getting artifact from last run ${workflowRun.id}...`);
         const lastRunArtifact = await octokit.actions.listArtifactsForRepo({
             owner: context.repo.owner,
             repo: context.repo.repo,
@@ -299,7 +313,9 @@ async function getStoredState(octokit: InstanceType<typeof GitHub>): Promise<Sta
     
                 const storeFile = resolve(artifactDownloadPath, storeFileName)
                 core.info(`Reading ${storeFileName} file from ${storeFile}`);
-                store = JSON.parse(fs.readFileSync(storeFile, 'utf8'))
+                const storeFileContent = fs.readFileSync(storeFile, 'utf8')
+                core.info(`Artifact content: ${storeFileContent}...`);
+                store = JSON.parse(storeFileContent)
                 core.info(`Read ${storeFileName} file from ${storeFile}, last page cursor: ${store.lastPRCursor}`);
             }
             catch(error) {
