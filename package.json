@@ -2,7 +2,7 @@
   "name": "review-cheerleader",
   "version": "1.0.0",
   "description": "",
-  "main": "lib/main.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "watch": "./node_modules/.bin/tsc-watch --onFirstSuccess \"npm version patch\"",
