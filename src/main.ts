@@ -185,7 +185,7 @@ async function run(): Promise<void> {
             )
         }
         
-        state.lastPRCursor = cursor !== null ? cursor : state.lastPRCursor
+        state.lastPRCursor = cursor ? cursor : state.lastPRCursor
         state.additionalDetails = outputTeamToAuthorText;
 
         core.info(`📋 Storing state for the next run, also setting output "cheerios-map": ${JSON.stringify(state)}`)
@@ -314,7 +314,7 @@ async function getStoredState(octokit: InstanceType<typeof GitHub>): Promise<Sta
                 const storeFile = resolve(artifactDownloadPath, storeFileName)
                 core.info(`Reading ${storeFileName} file from ${storeFile}`);
                 const storeFileContent = fs.readFileSync(storeFile, 'utf8')
-                core.info(`Artifact content: ${storeFileContent}...`);
+                core.info(`Content ${storeFileContent}...`);
                 store = JSON.parse(storeFileContent)
                 core.info(`Read ${storeFileName} file from ${storeFile}, last page cursor: ${store.lastPRCursor}`);
             }
