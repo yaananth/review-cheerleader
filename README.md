@@ -42,9 +42,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-    - name: Let's cheer up
-      id: cheerios-step
-      uses: ./
+    - name: Review cheerleader
+      uses: yaananth/review-cheerleader@v0.1
       with:
         api-token: ${{ secrets.API_TOKEN }}
         slack-webhook-url-map: "{'sample-team': '${{ secrets.SLACK_TOKEN }}'}"
