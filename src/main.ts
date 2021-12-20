@@ -199,6 +199,8 @@ async function run(): Promise<void> {
                 title: pull.title,
                 url: pull.url,
               });
+              outputTeamToAuthorText[teamName][author].PRs =
+                outputTeamToAuthorText[teamName][author].PRs.slice(-10);
             }
           }
         }
