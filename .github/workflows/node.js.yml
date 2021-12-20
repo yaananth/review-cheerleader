@@ -27,3 +27,5 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm run all
+    - name: Check for any pending files
+      run: git diff --exit-code
