@@ -2,7 +2,7 @@
   "name": "review-cheerleader",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
+  "main": "src/main.js",
   "scripts": {
     "build": "tsc",
     "watch": "./node_modules/.bin/tsc-watch --onFirstSuccess \"npm version patch\"",
@@ -12,7 +12,7 @@
     "lint-fix": "eslint src/**/*.ts --fix",
     "package": "ncc build --source-map --license licenses.txt",
     "test": "jest",
-    "exec": "tsc && node lib/main.js",
+    "exec": "tsc && node src/main.js",
     "all": "npm run build && npm run format && npm run lint-fix && npm run package"
   },
   "author": "",
