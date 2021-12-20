@@ -29,6 +29,7 @@ interface PRInfo {
 const SCORE_CHANGES_REQUESTED = 1.5;
 const SCORE_COMMENTED = 1.5;
 const SCORE_APPROVED = 1.0;
+const rverifyingfailure = 0;
 
 const artifactDownloadPath = "cheerios-artifacts";
 const storeFileName = "cheerios-state.json";
