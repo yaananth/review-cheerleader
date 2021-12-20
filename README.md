@@ -43,6 +43,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Review cheerleader
+      id: cheerios-step
       uses: yaananth/review-cheerleader@v0.1
       with:
         api-token: ${{ secrets.API_TOKEN }}
