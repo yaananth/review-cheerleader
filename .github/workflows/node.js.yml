@@ -28,4 +28,4 @@ jobs:
         cache: 'npm'
     - run: npm run all
     - name: Check for any pending files
-      run: git diff --exit-code . :^dist
+      run: git diff --exit-code -- . :^dist ^node_modules
