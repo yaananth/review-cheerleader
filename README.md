@@ -40,6 +40,8 @@ permissions:
 
 jobs:
   cheers:
+    # We want to avoid parallel runs, as we depend on artifacts produced by previous runs
+    concurrency: review-cheerleader
     runs-on: ubuntu-latest
     name: 🎉
     steps:
