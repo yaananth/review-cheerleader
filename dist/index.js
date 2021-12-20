@@ -15575,7 +15575,7 @@ function run() {
                 core.info(`🕵 Searching for PR's for ${github_1.context.repo.owner}/${github_1.context.repo.repo} cursor: ${cursor}...`);
                 const graphQLQuery = `query {
                 repository(owner: "${github_1.context.repo.owner}", name: "${github_1.context.repo.repo}") {
-                    pullRequests(first: ${pageSize}, states: [MERGED, CLOSED], orderBy: {field: UPDATED_AT, direction: DESC} ${cursor ? `, after: "${cursor}"` : ""}) {
+                    pullRequests(first: ${pageSize}, states: [MERGED, CLOSED], orderBy: {field: UPDATED_AT, direction: ASC} ${cursor ? `, after: "${cursor}"` : ""}) {
                         pageInfo {
                             hasNextPage
                             endCursor
