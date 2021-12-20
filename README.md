@@ -1,7 +1,5 @@
 # Review cheerleader GitHub Action
 
-<img width="367" alt="CleanShot 2021-12-20 at 14 00 29@2x" src="https://user-images.githubusercontent.com/12280011/146818895-0a854ed4-f435-4141-926c-bb1e79a134b6.png">
-
 ![cheerios](https://user-images.githubusercontent.com/12280011/146829936-2190b1a5-cdde-4b36-b8ca-6fa6813cc97e.jpeg)
 
 Pull request reviews are pivotal to teams. It helps to grow team.
@@ -73,6 +71,9 @@ Store the file produced as `cheerios-file` output.
 I provide slack notifications for reviews done on behalf of a team.
 
 So if a person `mona` reviewed on behalf of `mona-team`, you can set up notifications for reviews done for `mona-team` with: `{'mona-team': '${{ secrets.SLACK_TOKEN }}'}`
+
+<img width="367" alt="CleanShot 2021-12-20 at 14 00 29@2x" src="https://user-images.githubusercontent.com/12280011/146818895-0a854ed4-f435-4141-926c-bb1e79a134b6.png">
+
 
 ### What secrets are needed?
 
