@@ -64,7 +64,7 @@ function run() {
                     pullRequests(first: ${pageSize}, states: [MERGED, CLOSED], orderBy: {field: UPDATED_AT, direction: DESC} ${cursor ? `, after: "${cursor}"` : ""}) {
                         pageInfo {
                             hasNextPage
-                            endCursor
+                            startCursor
                         }
                         nodes {
                             id
@@ -93,7 +93,7 @@ function run() {
                 // search pull requests by graphql
                 pullsResult = yield repoOctokit.graphql(graphQLQuery);
                 core.info(`ℹ️ Result: ${JSON.stringify(pullsResult)}`);
-                cursor = pullsResult.repository.pullRequests.pageInfo.endCursor;
+                cursor = pullsResult.repository.pullRequests.pageInfo.startCursor;
                 core.info(`📋 Found ${pullsResult.repository.pullRequests.nodes.length} PR's for ${github_1.context.repo.owner}/${github_1.context.repo.repo}, cursor: ${cursor}`);
                 // iterate over PR's
                 for (const pull of pullsResult.repository.pullRequests.nodes) {

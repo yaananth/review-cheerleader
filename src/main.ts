@@ -66,7 +66,7 @@ async function run(): Promise<void> {
       }) {
                         pageInfo {
                             hasNextPage
-                            endCursor
+                            startCursor
                         }
                         nodes {
                             id
@@ -95,7 +95,7 @@ async function run(): Promise<void> {
       // search pull requests by graphql
       pullsResult = await repoOctokit.graphql(graphQLQuery);
       core.info(`ℹ️ Result: ${JSON.stringify(pullsResult)}`);
-      cursor = pullsResult.repository.pullRequests.pageInfo.endCursor;
+      cursor = pullsResult.repository.pullRequests.pageInfo.startCursor;
       core.info(
         `📋 Found ${pullsResult.repository.pullRequests.nodes.length} PR's for ${context.repo.owner}/${context.repo.repo}, cursor: ${cursor}`
       );
