@@ -24,7 +24,7 @@ ouputs:
     description: 'State file to store as artifact'
 runs:
   using: 'node12'
-  main: 'lib/main.js'
+  main: 'dist/index.js'
 branding:
   icon: 'award'
   color: 'orange'  
