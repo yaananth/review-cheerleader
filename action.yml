@@ -25,3 +25,6 @@ ouputs:
 runs:
   using: 'node12'
   main: 'lib/main.js'
+branding:
+  icon: 'award'
+  color: '#ffc107'  
