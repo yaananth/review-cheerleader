@@ -61,7 +61,7 @@ async function run(): Promise<void> {
                 repository(owner: "${context.repo.owner}", name: "${
         context.repo.repo
       }") {
-                    pullRequests(first: ${pageSize}, states: [MERGED, CLOSED] ${
+                    pullRequests(first: ${pageSize}, states: [MERGED, CLOSED], orderBy: {field: UPDATED_AT, direction: DESC} ${
         cursor ? `, after: "${cursor}"` : ""
       }) {
                         pageInfo {
