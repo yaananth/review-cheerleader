@@ -47,7 +47,7 @@ async function run(): Promise<void> {
 
   const state = await getStoredState(repoOctokit);
   let pullsResult: any;
-  let outputTeamToAuthorText: {
+  const outputTeamToAuthorText: {
     [key: string]: { [key: string]: IAuthorStats };
   } = {};
   let cursor = state.lastPRCursor;
@@ -168,13 +168,11 @@ async function run(): Promise<void> {
               core.info(
                 `☑️ ${author} reviewed with changes requested, so gets score of ${SCORE_CHANGES_REQUESTED}`
               );
-              state.cheeriosTeamMap[teamName][
-                author
-              ] += SCORE_CHANGES_REQUESTED;
+              state.cheeriosTeamMap[teamName][author] +=
+                SCORE_CHANGES_REQUESTED;
               outputTeamToAuthorText[teamName][author].requestedChanged += 1;
-              outputTeamToAuthorText[teamName][
-                author
-              ].delta += SCORE_CHANGES_REQUESTED;
+              outputTeamToAuthorText[teamName][author].delta +=
+                SCORE_CHANGES_REQUESTED;
               considerPR = true;
             }
             if (review.state === "APPROVED") {
@@ -249,8 +247,8 @@ async function run(): Promise<void> {
           slackHeadingEmoji +
           ` *I am your review cheer leader! I have an update for you!*`;
         message += `\n\n`;
-        let authorsArray: string[] = [];
-        let cheeriosArray: number[] = [];
+        const authorsArray: string[] = [];
+        const cheeriosArray: number[] = [];
         for (const author in state.additionalDetails[teamName]) {
           const authorStats = state.additionalDetails[teamName][author];
           message += `*<@${author}>* is up by ${authorStats.delta} cheerios!\n`;
